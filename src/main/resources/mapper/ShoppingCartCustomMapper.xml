@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.msj.order.mapper.ShoppingCartCustomMapper">
+  <resultMap id="BaseResultMap" type="com.msj.common.entity.ShoppingCart">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="product_id" jdbcType="INTEGER" property="productId" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+  </resultMap>
+  <resultMap id="ShoppingCartDtoMap" type="com.msj.common.dto.ShoppingCartDto">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="product_id" jdbcType="INTEGER" property="productId" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="status" javaType="INTEGER" property="shoppingCartStatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, product_id, num, status, gmt_create, gmt_modified
+  </sql>
+
+  <select id="queryShoppingCart" parameterType="java.lang.Integer" resultMap="ShoppingCartDtoMap">
+    SELECT id,product_id,num
+    FROM shopping_cart
+    WHERE user_id=#{userId} AND status=#{status}
+  </select>
+
+  <select id="queryShoppingCartByProductId" parameterType="java.lang.Integer" resultType="com.msj.common.dto.ShoppingCartDto">
+    SELECT id,num
+    FROM shopping_cart
+    WHERE user_id=#{userId} AND product_id=#{productId} AND status=#{status}
+  </select>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.msj.common.entity.ShoppingCart">
+    update shopping_cart
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="num != null">
+        num = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="queryShoppingCartCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT COUNT(id)
+    FROM shopping_cart
+    WHERE user_id=#{userId} AND status=#{status}
+  </select>
+
+  <insert id="insertSelective" parameterType="com.msj.common.entity.ShoppingCart">
+    insert into shopping_cart
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="num != null">
+        num,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create,
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="num != null">
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreate != null">
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateBatch" parameterType="java.util.List">
+    UPDATE shopping_cart
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="num= case id" suffix="end,">
+        <foreach collection="shoppingCartList" item="item" separator=" ">
+          <if test="item.id != null">
+            WHEN #{item.id} THEN #{item.num}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="gmt_modified= case id" suffix="end,">
+        <foreach collection="shoppingCartList" item="item" index="index">
+          <if test="item.id != null">
+            WHEN #{item.id} THEN #{item.gmtModified}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    WHERE id IN
+    <foreach collection="shoppingCartList" item="item" open="(" close=")" separator=",">
+      #{item.id}
+    </foreach>
+  </update>
+
+  <update id="updateShoppingCartStatus">
+    UPDATE shopping_cart
+    SET status=#{status}, gmt_modified=#{gmtModified}
+    WHERE id IN
+    <foreach collection="idList" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </update>
+
+  <select id="queryShoppingCartByIdList" resultMap="ShoppingCartDtoMap">
+    SELECT id,product_id,num,status
+    FROM shopping_cart
+    WHERE id IN
+    <foreach collection="idList" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </select>
+</mapper>

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.msj.order.mapper.OrderCustomMapper">
+  <resultMap id="BaseResultMap" type="com.msj.common.entity.Order">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_number" jdbcType="VARCHAR" property="orderNumber" />
+    <result column="receiving_address_id" jdbcType="INTEGER" property="receivingAddressId" />
+    <result column="pay_amount" jdbcType="DECIMAL" property="payAmount" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+    <result column="delivery_time" jdbcType="TIMESTAMP" property="deliveryTime" />
+    <result column="deal_time" jdbcType="TIMESTAMP" property="dealTime" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+  </resultMap>
+  <resultMap id="OrderDtoMap" type="com.msj.common.dto.OrderDto">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_number" jdbcType="VARCHAR" property="orderNumber" />
+    <result column="rname" jdbcType="VARCHAR" property="receivingAddress.name"/>
+    <result column="phone" jdbcType="CHAR" property="receivingAddress.phone"/>
+    <result column="province" jdbcType="VARCHAR" property="receivingAddress.province"/>
+    <result column="city" jdbcType="VARCHAR" property="receivingAddress.city"/>
+    <result column="address" jdbcType="VARCHAR" property="receivingAddress.address"/>
+    <result column="pay_amount" jdbcType="DECIMAL" property="payAmount"/>
+    <result column="status" jdbcType="INTEGER" property="status"/>
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="pay_time" jdbcType="TIMESTAMP" property="payTime"/>
+    <result column="delivery_time" jdbcType="TIMESTAMP" property="deliveryTime"/>
+    <result column="deal_time" jdbcType="TIMESTAMP" property="dealTime"/>
+    <collection property="products" column="id" ofType="com.msj.common.dto.ProductDto" select="queryOrderShoppingCart">
+    </collection>
+  </resultMap>
+  <resultMap id="ProductDtoMap" type="com.msj.common.dto.ProductDto">
+    <result column="sname" jdbcType="VARCHAR" property="name"/>
+    <result column="image" jdbcType="VARCHAR" property="image"/>
+    <result column="price" jdbcType="DECIMAL" property="price"/>
+    <result column="original_price" jdbcType="DECIMAL" property="originalPrice"/>
+    <result column="discount_price" jdbcType="DECIMAL" property="discountPrice"/>
+    <result column="num" jdbcType="INTEGER" property="num"/>
+    <result column="remark" jdbcType="VARCHAR" property="remark"/>
+  </resultMap>
+  <resultMap id="OrderDetailMap" type="com.msj.common.dto.OrderDto">
+      <id column="id" jdbcType="INTEGER" property="id" />
+      <result column="order_number" jdbcType="VARCHAR" property="orderNumber" />
+      <result column="rname" jdbcType="VARCHAR" property="receivingAddress.name"/>
+      <result column="phone" jdbcType="CHAR" property="receivingAddress.phone"/>
+      <result column="province" jdbcType="VARCHAR" property="receivingAddress.province"/>
+      <result column="city" jdbcType="VARCHAR" property="receivingAddress.city"/>
+      <result column="address" jdbcType="VARCHAR" property="receivingAddress.address"/>
+      <result column="pay_amount" jdbcType="DECIMAL" property="payAmount"/>
+      <result column="status" jdbcType="INTEGER" property="status"/>
+      <result column="gmt_create" jdbcType="TIMESTAMP" property="createTime" />
+      <result column="pay_time" jdbcType="TIMESTAMP" property="payTime"/>
+      <result column="delivery_time" jdbcType="TIMESTAMP" property="deliveryTime"/>
+      <result column="deal_time" jdbcType="TIMESTAMP" property="dealTime"/>
+      <collection property="products" ofType="com.msj.common.dto.ProductDto">
+          <result column="sname" jdbcType="VARCHAR" property="name"/>
+          <result column="image" jdbcType="VARCHAR" property="image"/>
+          <result column="price" jdbcType="DECIMAL" property="price"/>
+          <result column="original_price" jdbcType="DECIMAL" property="originalPrice"/>
+          <result column="discount_price" jdbcType="DECIMAL" property="discountPrice"/>
+          <result column="num" jdbcType="INTEGER" property="num"/>
+          <result column="remark" jdbcType="VARCHAR" property="remark"/>
+      </collection>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_number, receiving_address_id, pay_amount, status, pay_time, delivery_time,
+    deal_time, gmt_create, gmt_modified
+  </sql>
+
+  <insert id="insertSelective" parameterType="com.msj.common.entity.Order">
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+      SELECT LAST_INSERT_ID() AS id
+    </selectKey>
+    insert into `order`
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orderNumber != null">
+        order_number,
+      </if>
+      <if test="receivingAddressId != null">
+        receiving_address_id,
+      </if>
+      <if test="payAmount != null">
+        pay_amount,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="payTime != null">
+        pay_time,
+      </if>
+      <if test="deliveryTime != null">
+        delivery_time,
+      </if>
+      <if test="dealTime != null">
+        deal_time,
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create,
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderNumber != null">
+        #{orderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="receivingAddressId != null">
+        #{receivingAddressId,jdbcType=INTEGER},
+      </if>
+      <if test="payAmount != null">
+        #{payAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="payTime != null">
+        #{payTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deliveryTime != null">
+        #{deliveryTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dealTime != null">
+        #{dealTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtCreate != null">
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="queryOrderByStatus" parameterType="java.lang.Integer" resultMap="OrderDtoMap">
+    SELECT o.id,o.order_number,ura.name rname,ura.phone phone,ura.province,ura.city,ura.address,
+    o.pay_amount,o.status,o.gmt_create,o.pay_time,o.delivery_time,o.deal_time
+    FROM `order` o
+    LEFT JOIN user_receiving_address ura ON o.receiving_address_id=ura.id
+    WHERE ura.user_id=#{userId}
+    <if test="status!=null">
+      and o.status =#{status}
+    </if>
+    ORDER BY o.gmt_create desc
+  </select>
+  <select id="queryOrderShoppingCart" parameterType="java.lang.Integer" resultMap="ProductDtoMap">
+    SELECT osc.name sname,osc.image,osc.price,osc.original_price,osc.discount_price,sc.num,osc.remark
+    FROM `order` o
+    LEFT JOIN order_shopping_cart osc ON o.id=osc.order_id
+    LEFT JOIN shopping_cart sc ON sc.id=osc.shopping_cart_id
+    WHERE o.id=#{id}
+  </select>
+
+  <select id="queryOrderDetail" parameterType="java.lang.Integer" resultMap="OrderDetailMap">
+    SELECT o.id,o.order_number,ura.name rname,ura.phone phone,ura.province,ura.city,ura.address,
+    osc.name sname,osc.image,osc.price,osc.original_price,osc.discount_price,sc.num,osc.remark,
+    o.pay_amount,o.status,o.gmt_create,o.pay_time,o.delivery_time,o.deal_time
+    FROM `order` o
+    LEFT JOIN user_receiving_address ura ON o.receiving_address_id=ura.id
+    LEFT JOIN order_shopping_cart osc ON o.id=osc.order_id
+    LEFT JOIN shopping_cart sc ON sc.id=osc.shopping_cart_id
+    WHERE o.id=#{id}
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select order_number,status
+    from `order`
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.msj.common.entity.Order">
+    update `order`
+    <set>
+        <if test="orderNumber != null">
+            order_number = #{orderNumber,jdbcType=VARCHAR},
+        </if>
+        <if test="receivingAddressId != null">
+            receiving_address_id = #{receivingAddressId,jdbcType=INTEGER},
+        </if>
+        <if test="payAmount != null">
+            pay_amount = #{payAmount,jdbcType=DECIMAL},
+        </if>
+        <if test="status != null">
+            status = #{status,jdbcType=INTEGER},
+        </if>
+        <if test="payTime != null">
+            pay_time = #{payTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="deliveryTime != null">
+            delivery_time = #{deliveryTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="dealTime != null">
+            deal_time = #{dealTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="gmtCreate != null">
+            gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+        </if>
+        <if test="gmtModified != null">
+            gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+        </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

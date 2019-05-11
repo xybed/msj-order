@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.msj.order.mapper.OrderShoppingCartCustomMapper">
+  <resultMap id="BaseResultMap" type="com.msj.common.entity.OrderShoppingCart">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="shopping_cart_id" jdbcType="INTEGER" property="shoppingCartId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="image" jdbcType="VARCHAR" property="image" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="original_price" jdbcType="DECIMAL" property="originalPrice" />
+    <result column="discount_price" jdbcType="DECIMAL" property="discountPrice" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_id, shopping_cart_id, name, image, price, original_price, discount_price, 
+    remark
+  </sql>
+
+  <insert id="insertBatch" parameterType="java.util.List">
+    INSERT INTO order_shopping_cart
+    (order_id, shopping_cart_id, name, image, price, original_price, discount_price, remark)
+    VALUES
+      <foreach collection="list" item="item" separator=",">
+       (#{item.orderId},
+        #{item.shoppingCartId},
+        #{item.name},
+        #{item.image},
+        #{item.price},
+        #{item.originalPrice},
+        #{item.discountPrice},
+        #{item.remark})
+      </foreach>
+  </insert>
+</mapper>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.msj.order.mapper.OrderLogMapper">
+  <resultMap id="BaseResultMap" type="com.msj.common.entity.OrderLog">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_number" jdbcType="VARCHAR" property="orderNumber" />
+    <result column="before_status" jdbcType="INTEGER" property="beforeStatus" />
+    <result column="after_status" jdbcType="INTEGER" property="afterStatus" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_number, before_status, after_status, gmt_create
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from order_log
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from order_log
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.msj.common.entity.OrderLog">
+    insert into order_log (id, order_number, before_status, 
+      after_status, gmt_create)
+    values (#{id,jdbcType=INTEGER}, #{orderNumber,jdbcType=VARCHAR}, #{beforeStatus,jdbcType=INTEGER}, 
+      #{afterStatus,jdbcType=INTEGER}, #{gmtCreate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.msj.common.entity.OrderLog">
+    insert into order_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orderNumber != null">
+        order_number,
+      </if>
+      <if test="beforeStatus != null">
+        before_status,
+      </if>
+      <if test="afterStatus != null">
+        after_status,
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderNumber != null">
+        #{orderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="beforeStatus != null">
+        #{beforeStatus,jdbcType=INTEGER},
+      </if>
+      <if test="afterStatus != null">
+        #{afterStatus,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreate != null">
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.msj.common.entity.OrderLog">
+    update order_log
+    <set>
+      <if test="orderNumber != null">
+        order_number = #{orderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="beforeStatus != null">
+        before_status = #{beforeStatus,jdbcType=INTEGER},
+      </if>
+      <if test="afterStatus != null">
+        after_status = #{afterStatus,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.msj.common.entity.OrderLog">
+    update order_log
+    set order_number = #{orderNumber,jdbcType=VARCHAR},
+      before_status = #{beforeStatus,jdbcType=INTEGER},
+      after_status = #{afterStatus,jdbcType=INTEGER},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
