@@ -2,9 +2,9 @@ spring:
   application:
     name: msj-order
   datasource:
-    url: jdbc:mysql://47.99.189.242:3306/meishijia?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    url: jdbc:mysql://localhost:3306/meishijia?useUnicode=true&characterEncoding=utf-8&useSSL=false
     username: root
-    password: Ll-19921015
+    password: root
     driverClassName: com.mysql.jdbc.Driver
   cloud:
     consul:

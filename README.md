@@ -16,6 +16,12 @@ run docker container
 docker run -d --name msj-order --restart=always -p 9104:9104 msj-order:prod
 ```
 
+
+利用docker compose启动容器
+```bash
+docker-compose -f docker_order.yml up -d
+```
+
 停止容器
 ```bash
 docker stop msj-order

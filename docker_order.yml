@@ -1,0 +1,14 @@
+version: '3'
+services:
+    msj-order:
+        container_name: msj-order
+        image: msj-order:prod
+        ports:
+            - "9104:9104"
+        restart: always
+        networks:
+            - default
+            - app_net
+networks: 
+    app_net:
+        external: true
